@@ -1,0 +1,70 @@
+@page "/catalogomisura"
+@using System.ComponentModel
+@inject ScarpeService scarpeService
+
+<h2 class="h2" Catalogo delle scarpe suddiviso per misura />
+
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Seleziona la misura della scarpa
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="#">Tutte</a></li>
+    @foreach (int misura in Misure) {
+        <li><a class="dropdown-item" href="#">@misura</a></li>
+    }
+  </ul>
+</div>
+
+<!--3 colonne-->
+<div class="row row-cols-md-3 g-4 mt-2"> 
+    @foreach (Scarpa scarpa in Scarpe)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        @scarpa.Marca
+                    </h5>
+                    <h6 class="card-subtitle mb-2">@scarpa.Modello</h6>
+                    <ul class="list-unstyled mt">
+                        <li><strong>Misura </strong>@scarpa.Misura</li>
+                        <li><strong>Prezzo </strong>@scarpa.Prezzo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code{
+    private List<Scarpa> Scarpe = new();
+    HashSet<int> Misure = new HashSet<int>();
+
+    protected override void OnInitialized() {
+        
+        Scarpe = scarpeService.GetAll();
+
+        
+        foreach (Scarpa scarpa in Scarpe) {
+            Misure.Add(scarpa.Misura);
+        }
+
+    }
+
+    private void OnMisuraChanged(ChangeEventArgs e){
+        
+        string MisuraSelezionata = string.Empty;
+        MisuraSelezionata = e.Value?.ToString() ?? string.Empty;
+
+
+        if (MisuraSelezionata != string.Empty){
+            
+            if (MisuraSelezionata=="Tutte"){
+                Scarpe = scarpeService.GetAll();
+            }
+
+            else Scarpe = scarpeService.GetByMisura(MisuraSelezionata);
+        }
+    }
+}

@@ -1,0 +1,35 @@
+@page "/catalogo"
+@using System.ComponentModel
+@inject ScarpeService scarpeService
+
+<h2 class="h2" Catalogo delle scarpe disponibili />
+
+<!--3 colonne-->
+<div class="row row-cols-md-3 g-4 mt-2"> 
+    @foreach (Scarpa scarpa in Scarpe)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        @scarpa.Marca
+                    </h5>
+                    <h6 class="card-subtitle mb-2">@scarpa.Modello</h6>
+                    <ul class="list-unstyled mt">
+                        <li><strong>Misura </strong>@scarpa.Misura</li>
+                        <li><strong>Prezzo </strong>@scarpa.Prezzo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code{
+    private List<Scarpa> Scarpe = new();
+
+    protected override void OnInitialized() {
+        
+        Scarpe = scarpeService.GetAll();
+    }
+}
